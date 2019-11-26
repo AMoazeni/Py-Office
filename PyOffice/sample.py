@@ -7,8 +7,9 @@ def SampleFunction(*args, **kwargs):
     '''
     
     # Initialize
-    start_time = t()
     func_name = 'SampleFunction'
+    print(func_name, '[START]')
+    time_start = t()
     data = {}
     error = 0
     error_msg = ''
@@ -16,10 +17,10 @@ def SampleFunction(*args, **kwargs):
     # SampleFunction Block
     try:
         if args:
-            for arg in args:
-                print (arg)
-        data['start_time'] = start_time
-        data['ex_time'] = t() - start_time
+            for i, arg in enumerate(args):
+                print ('Input', i+1, ': ', arg)
+        data['time_start'] = float(round(time_start, 4))
+        data['time_ex'] = float(round(t() - time_start, 4))
         return data
 
     # Error Handler
@@ -32,7 +33,7 @@ def SampleFunction(*args, **kwargs):
         if error:
             print(func_name, '[ERROR]:', error_msg)
         else:
-            print(func_name, '[OK]: {0:.3}s\n'.format(float(t() - start_time)))
+            print(func_name, '[OK] {0:.3f}s\n'.format(float(t() - time_start)))
         pass
 
 
