@@ -36,4 +36,3 @@ def SampleFunction(*args, **kwargs):
             print(func_name, '[OK] {0:.3f}s\n'.format(float(t() - time_start)))
         pass
 
-

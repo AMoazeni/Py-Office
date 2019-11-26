@@ -1,48 +1,67 @@
+from time import time as t
+from urllib.request import urlopen as get
+
 def OpenFile(*args, **kwargs):
     
-    ''' csv_open(str 'csv_path') returns a Python Dictionary{} and accepts a local .CSV file path.
-    
-    Sample Use:
-    List of columns - "csv_data['columns'][0]"
-    List of rows - "csv_data['rows']"
-    First row - "csv_data['rows'][0]"
-    First item of first row - "csv_data['rows'][0][0]"
+    ''' OpenFile(str 'file_path') requires an 'str' PATH or URL input,
+        returns a Python Dictionary with the file data. 
     '''
     
     # Initialize
-    print('Running OpenFile function.', end='\n\n')
-    path = args[0]
-    file_data = {}
-    index = 0
+    func_name = 'OpenFile'
+    print(func_name, '[START]')
+    if args: print(func_name, 'Path:', args[0])
+    time_start = t()
     error = 0
+    error_msg = ''
+    
+    path = ''
+    data = {}
+    data_num = 0
     
     # OpenFile Function Block
     try:
-        with open(path, 'r') as file:
-            
-            
-            file_data = {'Data': [],
-                         'Extension': path.split('.')[-1],
-                         'Length': 0,
-                         'Name': path.split('/')[-1],
-                         'Path': path
-                        } 
-            
-            for line in file:
-                file_data['Data'].append(line)
+        path = str(args[0])
+        data['Data'] = []
+        
+        # PATH is a URL.
+        if 'http' in path.lower():
+            page = get(path)
+            for line in page:
+                data['Data'].append(line)
+                data_num = data_num + len(line)
                 
-            file_data['Length'] = len(file_data[Data])
-      
-        return file_data
+        # PATH is a local file.        
+        else:
+            with open(path, 'r', encoding="utf-8") as file:
+                for line in file:
+                    data['Data'].append(line)
+                    data_num = data_num + len(line)
+        
+        
+        data['TimeStart'] = float(round(time_start, 4))
+        data['TimeEx'] = float(round(t() - time_start, 4))
+        data['Path'] = path
+        data['Name'] = path.split('/')[-1]
+        data['Extension'] = path.split('.')[-1]
+        data['Lines'] = len(data['Data'])
+        data['DataNum'] = data_num
+        
+        return data
 
     # Error Handler
     except BaseException as e:
         error = 1
-        error_msg = 'Error: \n' + str(e)
-        print(error_msg, end='\n\n')
-        return None
+        error_msg = str(e)
+
     
     # Clean up block
     finally:
-        
+        if error:
+            print(func_name, '[ERROR]:', error_msg)
+        else:
+            print(func_name, '[OK] {0:.3f}s\n'.format(float(t() - time_start)))
         pass
+
+
+

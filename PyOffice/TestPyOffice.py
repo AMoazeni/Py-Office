@@ -1,16 +1,20 @@
 import unittest
 
-def add(a,b):
-  return a+b
+from OpenFile import OpenFile
 
-class TestDemo(unittest.TestCase):
-    """Example of how to use unittest in Jupyter."""
+class TestPyOffice(unittest.TestCase):
+    """PyOffice Test Functions."""
     
-    def test_pass(self):
-        self.assertEqual(add(2,2), 4)
+    def test_OpenFile_local(self):
+        local_path = '../csv/california_housing_test.csv'
+        self.assertEqual(str(type(OpenFile(local_path))), "<class 'dict'>")
 
-    def test_fail(self):
-        self.assertEqual(add(2,2), 4)
+    def test_OpenFile_url(self):
+        url_path = 'https://raw.githubusercontent.com/AMoazeni/PyOffice/master/CSV%20Data/googleplaystore.csv'
+        self.assertEqual(str(type(OpenFile(url_path))), "<class 'dict'>")
 
 if __name__ == '__main__':
-    unittest.main(argv=[''], exit=False)
+    unittest.main(argv=[''], exit=True)
+
+
+
