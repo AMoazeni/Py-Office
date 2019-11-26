@@ -17,7 +17,7 @@ def OpenFile(*args, **kwargs):
     
     path = ''
     data = {}
-    data_num = 0
+    data_len = 0
     
     # OpenFile Function Block
     try:
@@ -27,16 +27,20 @@ def OpenFile(*args, **kwargs):
         # PATH is a URL.
         if 'http' in path.lower():
             page = get(path)
-            for line in page:
-                data['Data'].append(line)
-                data_num = data_num + len(line)
+            page_code = page.getcode()
+            data['ResponseCode'] = page_code
+            page_headers = page.getheaders()
+            data['Headers'] = page_headers
+            for line in page.readlines():
+                data['Data'].append(line.decode('utf-8'))
+                data_len = data_len + len(str(line))
                 
         # PATH is a local file.        
         else:
             with open(path, 'r', encoding="utf-8") as file:
                 for line in file:
                     data['Data'].append(line)
-                    data_num = data_num + len(line)
+                    data_len = data_len + len(line)
         
         
         data['TimeStart'] = float(round(time_start, 4))
@@ -45,7 +49,7 @@ def OpenFile(*args, **kwargs):
         data['Name'] = path.split('/')[-1]
         data['Extension'] = path.split('.')[-1]
         data['Lines'] = len(data['Data'])
-        data['DataNum'] = data_num
+        data['DataLength'] = data_len
         
         return data
 
